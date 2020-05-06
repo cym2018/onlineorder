@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/onlineorder?&serverTimezone=Asia/Shanghai
+    username: root
+    password: ab370126
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: YYYY-MM-dd
+  mvc:
+    view:
+      suffix: .html
+      prefix: /
+    static-path-pattern: /**
+server:
+  port: 80
