@@ -1,94 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <link href="/css/theme.css" rel="stylesheet">
-  <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
-  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-  <script src="/js/data.js"></script>
-  <title>管理</title>
+    <meta charset="UTF-8">
+    <link href="/css/theme.css" rel="stylesheet">
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/data.js"></script>
+    <title>管理页面</title>
 </head>
 <body>
 <div id="app">
-  <!-- 顶部导航栏 -->
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="">管理</a>
-      </div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li :class="data.show.tab===0?'active':''"><a @click="setTab(0)">
-            <span class="glyphicon glyphicon-bed"></span>用户管理</a></li>
-          <li :class="data.show.tab===1?'active':''"><a @click="setTab(1)">
-            <span class="glyphicon glyphicon-book"></span>就诊记录</a></li>
-          <li :class="data.show.tab===2?'active':''"><a @click="setTab(2)">
-            <span class="glyphicon glyphicon-user"></span>患者管理</a></li>
-          <li :class="data.show.tab===3?'active':''"><a @click="setTab(3)">
-            <span class="glyphicon glyphicon-user"></span>医生管理</a></li>
-          <li :class="data.show.tab===4?'active':''"><a @click="setTab(4)">
-            <span class="glyphicon glyphicon-wrench"></span>科室管理</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a>
-              <span class="glyphicon glyphicon-envelop"></span>{{data.user.username}}
-            </a>
-          </li>
-          <li>
-            <a @click="logout()"><span class="glyphicon glyphicon-log-out"></span> 退出</a>
-          </li>
-        </ul>
-      </div><!--/.nav-collapse -->
-    </div>
-  </nav>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="">管理</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li :class="data.show.tab===0?'active':''"><a @click="setTab(0)">
+                        <span class="glyphicon glyphicon-bed"></span>用户管理</a></li>
+                    <li :class="data.show.tab===1?'active':''"><a @click="setTab(1)">
+                        <span class="glyphicon glyphicon-book"></span>菜单管理</a></li>
+                    <li :class="data.show.tab===2?'active':''"><a @click="setTab(2)">
+                        <span class="glyphicon glyphicon-user"></span>库存管理</a></li>
+                    <li :class="data.show.tab===3?'active':''"><a @click="setTab(3)">
+                        <span class="glyphicon glyphicon-user"></span>医生管理</a></li>
+                    <li :class="data.show.tab===4?'active':''"><a @click="setTab(4)">
+                        <span class="glyphicon glyphicon-wrench"></span>科室管理</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a>
+                            <span class="glyphicon glyphicon-envelop"></span>{{data.user.username}}
+                        </a>
+                    </li>
+                    <li>
+                        <a @click="logout()"><span class="glyphicon glyphicon-log-out"></span> 退出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <div class="container theme-showcase" role="main">
-    <!-- 列表显示区 -->
-    <div v-if="data.show.func===0">
-      <div class="col-md-12">
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <th v-for="title in data.titles[data.show.tab]">{{title}}</th>
-            <th>
-              <button class="btn btn-sm btn-info" @click="create()">添加</button>
-              <button class="btn btn-sm btn-success" @click="loadList()">刷新</button>
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="i in data.list">
-            <td v-for="j in i">{{j}}</td>
-            <td>
-              <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
-              <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- 主显示区域 -->
+    <div class="container theme-showcase" role="main">
+        <!-- 列表显示区 -->
+        <div v-if="data.show.func==='list'">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th v-for="title in data.titles[data.show.tab]">{{title}}</th>
+                        <th>
+                            <button class="btn btn-sm btn-info" @click="create()">添加</button>
+                            <button class="btn btn-sm btn-success" @click="loadList()">刷新</button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="i in data.list">
+                        <td v-for="j in i">{{j}}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
+                            <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 用户编辑 -->
+        <div v-if="data.show.func==='edit'&&data.show.tab===0">
+            <h1>编辑用户</h1>
+            <div class="form-horizontal" role="form">
+                <!--id-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">id</div>
+                    <div class="col-sm-10">
+                        <input disabled="disabled" v-model="data.entity.id" class="form-control" placeholder="自动生成">
+                    </div>
+                </div>
+                <!--姓名-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">姓名</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.name" class="form-control" placeholder="请输入姓名">
+                    </div>
+                </div>
+                <!--性别-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">姓别</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.gender" class="form-control" placeholder="请输入性别">
+                    </div>
+                </div>
+                <!--状态-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">状态</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.state" class="form-control" placeholder="请输入状态">
+                    </div>
+                </div>
+                <!--年龄-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">年龄</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.age" class="form-control" placeholder="请输入年龄">
+                    </div>
+                </div>
+                <!--邮箱-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">邮箱</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.mail" class="form-control" placeholder="请输入邮箱">
+                    </div>
+                </div>
+                <!--电话-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">电话</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.phone" class="form-control" placeholder="请输入电话">
+                    </div>
+                </div>
+                <!--用户名-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">用户名</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.username" class="form-control" placeholder="请输入用户名">
+                    </div>
+                </div>
+                <!--密码-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">密码</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.password" class="form-control" placeholder="请输入密码">
+                    </div>
+                </div>
+                <!--类型-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">密码</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.type" class="form-control" placeholder="请输入类型">
+                    </div>
+                </div>
+                <!--备注-->
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">备注</div>
+                    <div class="col-sm-10">
+                        <input type="text" v-model="data.entity.note" class="form-control" placeholder="备注">
+                    </div>
+                </div>
+                <!--按钮-->
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-default" @click="save()">
+                            保存
+                        </button>
+                        <button class="btn btn-warning" style="margin-left: 20px" @click="data.show.func='list'">
+                            取消
+                        </button>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 菜单编辑 -->
+        <div v-if="data.show.func==='edit'&&data.show.tab===1">
+            <div v-if="data.show.func==='edit'&&data.show.tab===0">
+                <h1>编辑菜单</h1>
+                <div class="form-horizontal" role="form">
+                    <!--id-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">id</div>
+                        <div class="col-sm-10">
+                            <input disabled="disabled" v-model="data.entity.id" class="form-control" placeholder="自动生成">
+                        </div>
+                    </div>
+                    <!--姓名-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">姓名</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.name" class="form-control" placeholder="请输入姓名">
+                        </div>
+                    </div>
+                    <!--性别-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">姓别</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.gender" class="form-control" placeholder="请输入性别">
+                        </div>
+                    </div>
+                    <!--状态-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">状态</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.state" class="form-control" placeholder="请输入状态">
+                        </div>
+                    </div>
+                    <!--年龄-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">年龄</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.age" class="form-control" placeholder="请输入年龄">
+                        </div>
+                    </div>
+                    <!--邮箱-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">邮箱</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.mail" class="form-control" placeholder="请输入邮箱">
+                        </div>
+                    </div>
+                    <!--电话-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">电话</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.phone" class="form-control" placeholder="请输入电话">
+                        </div>
+                    </div>
+                    <!--用户名-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">用户名</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.username" class="form-control" placeholder="请输入用户名">
+                        </div>
+                    </div>
+                    <!--密码-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">密码</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.password" class="form-control" placeholder="请输入密码">
+                        </div>
+                    </div>
+                    <!--类型-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">密码</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.type" class="form-control" placeholder="请输入类型">
+                        </div>
+                    </div>
+                    <!--备注-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">备注</div>
+                        <div class="col-sm-10">
+                            <input type="text" v-model="data.entity.note" class="form-control" placeholder="备注">
+                        </div>
+                    </div>
+                    <!--按钮-->
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-default" @click="save()">
+                                保存
+                            </button>
+                            <button class="btn btn-warning" style="margin-left: 20px" @click="data.show.func='list'">
+                                取消
+                            </button>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div v-if="data.show.func==='edit'&&data.show.tab===2">编辑2</div>
+        <div v-if="data.show.func==='edit'&&data.show.tab===3">编辑3</div>
+        <div v-if="data.show.func==='edit'&&data.show.tab===4">编辑4</div>
+        <div v-if="data.show.func==='edit'">
+            <button @click="data.show.func='list'">返回</button>
+        </div>
     </div>
-  </div>
-  <script>
+</div>
+<script>
     let app = new Vue({
       el: "#app",
       data: {data, url},
       methods: {
         // 全局操作
         setTab(tab) {
-          if (this.data.show.func === 0) {
+          if (this.data.show.func === 'list') {
             this.data.show.tab = tab;
+            this.loadList();
           }
         },
         logout() {
@@ -103,11 +307,11 @@
         },
         // 实体操作
         edit(id) {
-          this.data.show.func = 1;
+          this.data.show.func = 'edit';
           this.loadEntity(id);
         },
         create() {
-          this.data.show.func = 1;
+          this.data.show.func = 'edit';
           this.data.entity = {};
         },
         loadEntity(id) {
@@ -115,13 +319,29 @@
             this.data.entity = JSON.parse(res);
           });
         },
+        save(){
+          jQuery.get(this.url.save(this.data.show.tab)+urlEncoding2(data.entity))
+                .then(res=>{
+            alert('保存'+res);
+            this.data.show.func='list';
+            this.loadList();
+          });
+        },
         remove(id) {
+            jQuery.get(this.url.remove(this.data.show.tab)+id)
+                .then(res=>{
+            alert('删除'+res);
+            this.data.show.func='list';
+            this.loadList();
+          });
         }
       },
       created() {
         this.loadList();
       }
     });
-  </script>
+
+
+</script>
 </body>
 </html>

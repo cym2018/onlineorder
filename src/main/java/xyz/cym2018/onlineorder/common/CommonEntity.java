@@ -1,5 +1,6 @@
 package xyz.cym2018.onlineorder.common;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * @description 所有表都包含的公共属性, id, 状态, 备注, 创建时间, 更新时间
+ * 公共属性, id, 状态, 备注, 创建时间, 更新时间
  */
 @MappedSuperclass
 public abstract class CommonEntity {
@@ -15,23 +16,22 @@ public abstract class CommonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
     @Column
-    protected Integer state;
+    protected STATE state;
     @Column
     protected Integer type;
     @Column
     protected String note;
-    @CreationTimestamp
-    protected Date createTs;
     @UpdateTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     protected Date updateTs;
 
-    public Integer getState() {
+    public STATE getState() {
         if (state == null)
-            return 0;
+            return STATE.PASSIVE;
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(STATE state) {
         this.state = state;
     }
 
@@ -51,12 +51,12 @@ public abstract class CommonEntity {
         this.id = id;
     }
 
-    public Date getCreateTs() {
-        return createTs;
-    }
-
     public Date getUpdateTs() {
         return updateTs;
+    }
+
+    public void setUpdateTs(Date updateTs) {
+        this.updateTs = updateTs;
     }
 
     public Integer getType() {
@@ -67,11 +67,4 @@ public abstract class CommonEntity {
         this.type = type;
     }
 
-    public void setCreateTs(Date createTs) {
-        this.createTs = createTs;
-    }
-
-    public void setUpdateTs(Date updateTs) {
-        this.updateTs = updateTs;
-    }
 }

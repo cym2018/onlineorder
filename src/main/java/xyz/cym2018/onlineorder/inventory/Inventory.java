@@ -1,9 +1,14 @@
 package xyz.cym2018.onlineorder.inventory;
 
 import xyz.cym2018.onlineorder.common.CommonEntity;
+import xyz.cym2018.onlineorder.common.STATE;
 
 import javax.persistence.Entity;
 import java.util.Date;
+
+/**
+ * Inventory 库存
+ */
 @Entity
 public class Inventory  extends CommonEntity {
     private String name;
@@ -16,10 +21,6 @@ public class Inventory  extends CommonEntity {
         this.name = name;
     }
 
-    @Override
-    public Date getCreateTs() {
-        return super.getCreateTs();
-    }
 
     @Override
     public Date getUpdateTs() {
@@ -29,11 +30,6 @@ public class Inventory  extends CommonEntity {
     @Override
     public Integer getId() {
         return super.getId();
-    }
-
-    @Override
-    public Integer getState() {
-        return super.getState();
     }
 
     @Override
@@ -57,14 +53,15 @@ public class Inventory  extends CommonEntity {
     }
 
     @Override
-    public void setState(Integer state) {
-        super.setState(state);
+    public STATE getState() {
+        return super.getState();
     }
 
     @Override
-    public void setCreateTs(Date createTs) {
-        super.setCreateTs(createTs);
+    public void setState(STATE state) {
+        super.setState(state);
     }
+
 
     @Override
     public void setType(Integer type) {

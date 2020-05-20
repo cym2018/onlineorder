@@ -1,13 +1,14 @@
 package xyz.cym2018.onlineorder.user;
 
 import xyz.cym2018.onlineorder.common.CommonEntity;
+import xyz.cym2018.onlineorder.common.STATE;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Date;
 
 /**
- * @description 人员相关公共属性, 姓名, 性别, 年龄, 身份证号
+ * 用户信息
  */
 @Entity
 public class User extends CommonEntity {
@@ -17,10 +18,14 @@ public class User extends CommonEntity {
     protected String name;
     @Column
     protected Integer age;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     protected String username;
-    @Column
+    @Column(nullable = false)
     protected String password;
+    @Column
+    private String mail;
+    @Column
+    private String phone;
 
     public User(String username, String password) {
         setUsername(username);
@@ -34,6 +39,22 @@ public class User extends CommonEntity {
     }
 
     public User() {
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getUsername() {
@@ -53,12 +74,12 @@ public class User extends CommonEntity {
     }
 
     @Override
-    public Integer getState() {
+    public STATE getState() {
         return super.getState();
     }
 
     @Override
-    public void setState(Integer state) {
+    public void setState(STATE state) {
         super.setState(state);
     }
 
@@ -82,15 +103,6 @@ public class User extends CommonEntity {
         super.setId(id);
     }
 
-    @Override
-    public Date getCreateTs() {
-        return super.getCreateTs();
-    }
-
-    @Override
-    public void setCreateTs(Date createTs) {
-        super.setCreateTs(createTs);
-    }
 
     @Override
     public Date getUpdateTs() {

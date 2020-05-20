@@ -6,27 +6,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.cym2018.onlineorder.common.EntityController;
 
 @RequestMapping("/user")
 @RestController
-public class UserController {
+public class UserController implements EntityController<User> {
     @Autowired
     UserService userService;
     @Autowired
     ObjectMapper objectMapper;
 
+    @Override
     @RequestMapping("/findAll")
     public String findAll() throws JsonProcessingException {
         return objectMapper.writeValueAsString(userService.findAll());
     }
 
+    @Override
     @RequestMapping("/listView/findAll")
     public String findAllListView() throws JsonProcessingException {
         return objectMapper.writeValueAsString(userService.toListView(userService.findAll()));
     }
+
+    @Override
+    @RequestMapping("/remove/{id}")
+    public String removeById(@PathVariable("id") User user) {
+        try {
+            userService.remove(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "失败";
+        }
+        return "成功";
+    }
+
+    @RequestMapping("/save")
+    public String save(User user) {
+        try {
+            userService.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "失败";
+        }
+        return "成功";
+    }
+
+    @Override
     @RequestMapping("/{id}")
-    public String findById(@PathVariable("id")User user) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(user);
+    public String findById(@PathVariable("id") User user) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userService.toFullView(user));
     }
 
 }

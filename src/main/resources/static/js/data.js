@@ -3,12 +3,18 @@ const url = {
   root: "/",
   login: "/login",
   logout: "/logout",
-  tables:["/user/"],
+  tables:["/user/","/menu/"],
   findAll(tab){
     return this.tables[tab]+"listView/findAll";
   },
   findOne(tab){
     return this.tables[tab];
+  },
+  save(tab){
+    return this.tables[tab]+"save";
+  },
+  remove(tab){
+    return this.tables[tab]+"remove/"
   }
 }
 const data = {
@@ -19,10 +25,11 @@ const data = {
   entity: {},
   show: {
     tab: 0,
-    func: 0,
+    func: 'list',
   },
   titles: [
-    ["id", "用户名", "姓名", "性别", "年龄", "角色"]
+    ["id", "用户名", "姓名", "性别", "年龄", "角色"],
+    ["id","名称","价格","备注","类型","状态"]
   ]
 }
 // 通用

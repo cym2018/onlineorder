@@ -2,7 +2,8 @@ package xyz.cym2018.onlineorder.user.view;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import xyz.cym2018.onlineorder.user.User;
-@JsonPropertyOrder({"id","username","name","gender","age","type"})
+
+@JsonPropertyOrder({"id", "username", "name", "gender", "age", "type"})
 public class ListView {
     final private User user;
 
@@ -28,7 +29,6 @@ public class ListView {
 
     public Integer getAge() {
         return user.getAge();
-
     }
 
     public String getType() {
