@@ -25,15 +25,15 @@ public class MainRestController {
         if (result) {
             response.addCookie(new Cookie("username", username));
             response.addCookie(new Cookie("password", password));
-            request.getSession().setAttribute("username", username);
             return "登陆成功";
         }
         return "用户名或密码不正确";
     }
 
     /**
+     * 删除登陆信息:Cookie和Session
+     *
      * @return 注销成功
-     * @description 删除登陆信息:Cookie和Session
      */
     @RequestMapping("/logout")
     public boolean logout() {

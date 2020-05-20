@@ -2,9 +2,10 @@ package xyz.cym2018.onlineorder.menu.view;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import xyz.cym2018.onlineorder.common.STATE;
+import xyz.cym2018.onlineorder.common.TYPE;
 import xyz.cym2018.onlineorder.menu.Menu;
 
-@JsonPropertyOrder({"id", "name", "price", "note", "type", "state"})
+@JsonPropertyOrder({"id", "name", "price", "note", "type", "number", "state"})
 public class ListView {
     final private Menu menu;
 
@@ -28,11 +29,15 @@ public class ListView {
         return menu.getNote();
     }
 
-    public Integer getType() {
+    public TYPE getType() {
         return menu.getType();
     }
 
     public STATE getState() {
         return menu.getState();
+    }
+
+    public Integer getNumber() {
+        return menu.getNumber();
     }
 }

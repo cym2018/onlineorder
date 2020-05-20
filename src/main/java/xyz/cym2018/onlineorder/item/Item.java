@@ -1,35 +1,53 @@
-package xyz.cym2018.onlineorder.menu;
+package xyz.cym2018.onlineorder.item;
 
 import xyz.cym2018.onlineorder.common.CommonEntity;
 import xyz.cym2018.onlineorder.common.STATE;
 import xyz.cym2018.onlineorder.common.TYPE;
+import xyz.cym2018.onlineorder.menu.Menu;
+import xyz.cym2018.onlineorder.user.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.Date;
 
 /**
- * 菜单表
- * 状态:state
- * 0->未发布
- * 1->在用
- * 2->删除
+ * 订单
  */
 @Entity
-public class Menu extends CommonEntity {
-    // 名称
+public class Item extends CommonEntity {
+    @OneToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+    @OneToOne
+    @JoinColumn(name = "MENU_ID")
+    private Menu menu;
+
+    public Item(User user, Menu menu, Integer number) {
+        this.user = user;
+        this.menu = menu;
+        this.number = number;
+    }
+
     @Column
-    private String name;
-    // 价格
-    @Column
-    private Double price;
-    // 商品信息 -> note
-    // 商品详情
-    @Column
-    private String detail;
-    // 库存
-    @Column
-    private Integer number=-1;
+    private Integer number;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     public Integer getNumber() {
         return number;
@@ -37,22 +55,6 @@ public class Menu extends CommonEntity {
 
     public void setNumber(Integer number) {
         this.number = number;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -103,13 +105,5 @@ public class Menu extends CommonEntity {
     @Override
     public void setType(TYPE type) {
         super.setType(type);
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
     }
 }

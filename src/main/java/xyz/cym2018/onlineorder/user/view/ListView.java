@@ -32,15 +32,6 @@ public class ListView {
     }
 
     public String getType() {
-        switch (user.getType()) {
-            case 0:
-                return "管理员";
-            case 1:
-                return "员工";
-            case 2:
-                return "顾客";
-            default:
-                return user.getType().toString();
-        }
+        return user.getType().name();
     }
 }

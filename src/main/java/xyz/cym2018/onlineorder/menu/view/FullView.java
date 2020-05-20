@@ -1,6 +1,7 @@
 package xyz.cym2018.onlineorder.menu.view;
 
 import xyz.cym2018.onlineorder.common.STATE;
+import xyz.cym2018.onlineorder.common.TYPE;
 import xyz.cym2018.onlineorder.menu.Menu;
 
 public class FullView {
@@ -30,8 +31,12 @@ public class FullView {
         return menu.getId();
     }
 
-    public Integer getType() {
+    public TYPE getType() {
         return menu.getType();
+    }
+
+    public Integer getNumber() {
+        return menu.getNumber();
     }
 
     public String getDetail() {

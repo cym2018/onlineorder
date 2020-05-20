@@ -23,6 +23,12 @@ public class UserController implements EntityController<User> {
     }
 
     @Override
+    @RequestMapping("/{id}")
+    public String findById(@PathVariable("id") User user) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userService.toFullView(user));
+    }
+
+    @Override
     @RequestMapping("/listView/findAll")
     public String findAllListView() throws JsonProcessingException {
         return objectMapper.writeValueAsString(userService.toListView(userService.findAll()));
@@ -31,13 +37,7 @@ public class UserController implements EntityController<User> {
     @Override
     @RequestMapping("/remove/{id}")
     public String removeById(@PathVariable("id") User user) {
-        try {
-            userService.remove(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "失败";
-        }
-        return "成功";
+        return userService.remove(user) ? "成功" : "失败";
     }
 
     @RequestMapping("/save")
@@ -45,16 +45,8 @@ public class UserController implements EntityController<User> {
         try {
             userService.save(user);
         } catch (Exception e) {
-            e.printStackTrace();
             return "失败";
         }
         return "成功";
     }
-
-    @Override
-    @RequestMapping("/{id}")
-    public String findById(@PathVariable("id") User user) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(userService.toFullView(user));
-    }
-
 }

@@ -22,6 +22,10 @@ public class UserService implements CommonService<User> {
         return userRepository.save(user);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     @Override
     public List<User> findAll() {
         Class<User> i = User.class;
@@ -42,6 +46,7 @@ public class UserService implements CommonService<User> {
         return userRepository.existsByUsernameAndPassword(username, password);
     }
 
+
     public List<Object> toListView(List<User> userList) {
         List<Object> viewList = new ArrayList<>();
         userList.forEach(o -> viewList.add(new ListView(o)));
@@ -57,7 +62,8 @@ public class UserService implements CommonService<User> {
     public Object toSelfView(User user) {
         return new SelfView(user);
     }
-    public Object toFullView(User user){
+
+    public Object toFullView(User user) {
         return new FullView(user);
     }
 }

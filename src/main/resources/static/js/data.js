@@ -3,7 +3,7 @@ const url = {
   root: "/",
   login: "/login",
   logout: "/logout",
-  tables:["/user/","/menu/"],
+  tables:["/user/","/menu/","/order/"],
   findAll(tab){
     return this.tables[tab]+"listView/findAll";
   },
@@ -29,7 +29,7 @@ const data = {
   },
   titles: [
     ["id", "用户名", "姓名", "性别", "年龄", "角色"],
-    ["id","名称","价格","备注","类型","状态"]
+    ["id","名称","价格","备注","类型","库存","状态"]
   ]
 }
 // 通用

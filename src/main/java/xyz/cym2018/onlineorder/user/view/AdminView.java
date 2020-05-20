@@ -1,6 +1,7 @@
 package xyz.cym2018.onlineorder.user.view;
 
 import xyz.cym2018.onlineorder.common.STATE;
+import xyz.cym2018.onlineorder.common.TYPE;
 import xyz.cym2018.onlineorder.user.User;
 
 /**
@@ -37,7 +38,7 @@ public class AdminView {
         return user.getId();
     }
 
-    public Integer getType() {
+    public TYPE getType() {
         return user.getType();
     }
 

@@ -18,7 +18,7 @@ public abstract class CommonEntity {
     @Column
     protected STATE state;
     @Column
-    protected Integer type;
+    protected TYPE type;
     @Column
     protected String note;
     @UpdateTimestamp
@@ -59,11 +59,11 @@ public abstract class CommonEntity {
         this.updateTs = updateTs;
     }
 
-    public Integer getType() {
+    public TYPE getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(TYPE type) {
         this.type = type;
     }
 

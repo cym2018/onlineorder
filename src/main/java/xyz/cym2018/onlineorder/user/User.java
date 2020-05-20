@@ -2,6 +2,7 @@ package xyz.cym2018.onlineorder.user;
 
 import xyz.cym2018.onlineorder.common.CommonEntity;
 import xyz.cym2018.onlineorder.common.STATE;
+import xyz.cym2018.onlineorder.common.TYPE;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +33,7 @@ public class User extends CommonEntity {
         setPassword(password);
     }
 
-    public User(String username, String password, Integer type) {
+    public User(String username, String password, TYPE type) {
         setUsername(username);
         setPassword(password);
         setType(type);
@@ -115,12 +116,12 @@ public class User extends CommonEntity {
     }
 
     @Override
-    public Integer getType() {
+    public TYPE getType() {
         return super.getType();
     }
 
     @Override
-    public void setType(Integer type) {
+    public void setType(TYPE type) {
         super.setType(type);
     }
 
