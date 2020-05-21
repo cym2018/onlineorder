@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <link href="/css/theme.css" rel="stylesheet">
@@ -8,7 +8,7 @@
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-    <script src="/js/data.js"></script>
+    <script src="/js/admin.js"></script>
     <title>管理页面</title>
 </head>
 <body>
@@ -33,11 +33,7 @@
                     <li :class="data.show.tab===1?'active':''"><a @click="setTab(1)">
                         <span class="glyphicon glyphicon-book"></span>菜单管理</a></li>
                     <li :class="data.show.tab===2?'active':''"><a @click="setTab(2)">
-                        <span class="glyphicon glyphicon-user"></span>库存管理</a></li>
-                    <li :class="data.show.tab===3?'active':''"><a @click="setTab(3)">
-                        <span class="glyphicon glyphicon-user"></span>医生管理</a></li>
-                    <li :class="data.show.tab===4?'active':''"><a @click="setTab(4)">
-                        <span class="glyphicon glyphicon-wrench"></span>科室管理</a></li>
+                        <span class="glyphicon glyphicon-user"></span>订单管理</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
@@ -64,6 +60,7 @@
                         <th v-for="title in data.titles[data.show.tab]">{{title}}</th>
                         <th>
                             <button class="btn btn-sm btn-info" @click="create()">添加</button>
+                            </th><th>
                             <button class="btn btn-sm btn-success" @click="loadList()">刷新</button>
                         </th>
                     </tr>
@@ -71,10 +68,24 @@
                     <tbody>
                     <tr v-for="i in data.list">
                         <td v-for="j in i">{{j}}</td>
-                        <td>
+                        <td v-if="data.show.tab===0">
                             <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
+                        </td>
+                        <td v-if="data.show.tab===0">
                             <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
                         </td>
+                        <td v-if="data.show.tab===1&&i.state==='激活'">
+                            <button class="btn btn-sm btn-info" @click="setNotActive(i.id)">冻结</button>
+                        </td>
+                        <td v-if="data.show.tab===1&&i.state==='未激活'">
+                            <button class="btn btn-sm btn-success" @click="setActive(i.id)">激活
+                            </button>
+                        </td>
+                        <td v-if="data.show.tab===1">
+                            <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除
+                            </button>
+                        </td>
+
                     </tr>
                     </tbody>
                 </table>
@@ -298,26 +309,38 @@
           });
         },
         save(){
-          jQuery.get(this.url.save(this.data.show.tab)+urlEncoding2(data.entity))
-                .then(res=>{
+          jQuery.get(this.url.save(this.data.show.tab)+urlEncoding2(data.entity)).then(res=>{
             alert('保存'+res);
             this.data.show.func='list';
             this.loadList();
           });
         },
         remove(id) {
-            jQuery.get(this.url.remove(this.data.show.tab)+id)
-                .then(res=>{
+          jQuery.get(this.url.remove(this.data.show.tab)+id).then(res=>{
             alert('删除'+res);
             this.data.show.func='list';
             this.loadList();
           });
-        }
+        },
+        setActive(id){
+          jQuery.get(this.url.setActive(this.data.show.tab,id)).then(res=>{
+            this.loadList();
+          });
+        },
+        setNotActive(id){
+          jQuery.get(this.url.setNotActive(this.data.show.tab,id)).then(res=>{
+            this.loadList();
+          });
+        },
       },
       created() {
         this.loadList();
       }
     });
+
+
+
+
 
 
 

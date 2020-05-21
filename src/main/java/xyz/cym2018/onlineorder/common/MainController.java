@@ -1,18 +1,28 @@
 package xyz.cym2018.onlineorder.common;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import xyz.cym2018.onlineorder.item.ItemService;
 import xyz.cym2018.onlineorder.menu.Menu;
 import xyz.cym2018.onlineorder.menu.MenuService;
 import xyz.cym2018.onlineorder.user.User;
 import xyz.cym2018.onlineorder.user.UserService;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Controller
 public class MainController {
+    @Autowired
+    ItemService itemService;
+    @Autowired
+    ObjectMapper objectMapper;
     @Autowired
     private UserService userService;
     @Autowired
@@ -22,8 +32,11 @@ public class MainController {
     public String autoLogin(
             @Nullable @CookieValue("username") String cUsername,
             @Nullable @CookieValue("password") String cPassword
-    ) {
-        if (cUsername == null || cPassword == null || !userService.login(cUsername, cPassword)) {
+    ) throws JsonProcessingException {
+        if (cUsername == null || cPassword == null) {
+            return "login";
+        }
+        if (!userService.login(cUsername, cPassword)) {
             return "login";
         }
         User user = userService.findByUsername(cUsername);
@@ -33,7 +46,7 @@ public class MainController {
             case 顾客:
                 return "shop";
             case 管理员:
-                return "main";
+                return "admin";
             default:
                 return "login";
         }
@@ -49,10 +62,18 @@ public class MainController {
         if (userService.findAll().size() == 0) {
             // 生成用户数据
             {
-                userService.save(new User("admin", "admin", TYPE.管理员));
-                userService.save(new User("root", "root", TYPE.管理员));
-                userService.save(new User("worker", "worker", TYPE.员工));
-                userService.save(new User("customer", "customer", TYPE.顾客));
+                User user = new User("admin", "admin", TYPE.管理员);
+                user.setState(STATE.激活);
+                userService.save(user);
+                user = new User("root", "root", TYPE.管理员);
+                user.setState(STATE.激活);
+                userService.save(user);
+                user = new User("worker", "worker", TYPE.员工);
+                user.setState(STATE.激活);
+                userService.save(user);
+                user = new User("customer", "customer", TYPE.顾客);
+                user.setState(STATE.激活);
+                userService.save(user);
             }
             // 生成菜单数据
             {
@@ -60,14 +81,14 @@ public class MainController {
                 menu.setName("超甜甜王西瓜果切/500ml");
                 menu.setNote("650ml哦");
                 menu.setPrice(2.79);
-                menu.setState(STATE.ACTIVE);
+                menu.setState(STATE.激活);
                 menuService.save(menu);
 
                 menu = new Menu();
                 menu.setName("香酥烧饼");
                 menu.setNote("主要原料:面粉");
                 menu.setPrice(2.0);
-                menu.setState(STATE.ACTIVE);
+                menu.setState(STATE.激活);
                 menuService.save(menu);
 
                 menu = new Menu();
@@ -75,15 +96,29 @@ public class MainController {
                 menu.setNote("汤料丰富,正宗淮南食材.需醋包请单点或备注");
                 menu.setPrice(13.0);
                 menu.setDetail("主要原料:粉丝,豆腐皮,香菜,香葱,牛肉");
-                menu.setState(STATE.ACTIVE);
+                menu.setState(STATE.激活);
                 menuService.save(menu);
 
                 menu = new Menu();
                 menu.setName("济南甜沫");
                 menu.setNote("纯正的老济南味道");
                 menu.setPrice(4.0);
-                menu.setState(STATE.PASSIVE);
+                menu.setState(STATE.未激活);
                 menuService.save(menu);
+            }
+            // 生成订单数据
+            {
+                AtomicInteger i = new AtomicInteger(1);
+                User user = userService.findByUsername("customer");
+                List<Menu> menu = menuService.findAllActive();
+                menu.forEach(o -> {
+                    i.getAndIncrement();
+                    try {
+                        itemService.doBuy(user, o, i.get());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
         return "debug";

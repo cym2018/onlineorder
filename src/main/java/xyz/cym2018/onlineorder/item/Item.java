@@ -17,6 +17,10 @@ import java.util.Date;
  */
 @Entity
 public class Item extends CommonEntity {
+    public Item() {
+        super.setState(STATE.未支付);
+    }
+
     @OneToOne
     @JoinColumn(name = "USER_ID")
     private User user;
@@ -25,6 +29,7 @@ public class Item extends CommonEntity {
     private Menu menu;
 
     public Item(User user, Menu menu, Integer number) {
+        super.setState(STATE.未支付);
         this.user = user;
         this.menu = menu;
         this.number = number;

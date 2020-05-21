@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
     List<Menu> findByStateNot(STATE state);
+    List<Menu> findByState(STATE state);
+
 }

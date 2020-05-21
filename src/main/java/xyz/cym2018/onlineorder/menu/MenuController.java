@@ -56,4 +56,21 @@ public class MenuController implements EntityController<Menu> {
         }
         return "成功";
     }
+
+    @RequestMapping("/CustomView/findAll")
+    public String findAllCustomView() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(menuService.toCustomView(menuService.findAllActive()));
+    }
+
+    @RequestMapping("/setActive/{id}")
+    public Boolean setActive(@PathVariable("id") Menu menu) {
+        menuService.setActive(menu);
+        return true;
+    }
+
+    @RequestMapping("/setNotActive/{id}")
+    public Boolean setNotActive(@PathVariable("id") Menu menu) {
+        menuService.setNotActive(menu);
+        return true;
+    }
 }

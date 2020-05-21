@@ -1,7 +1,6 @@
 package xyz.cym2018.onlineorder.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ public abstract class CommonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
     @Column
-    protected STATE state;
+    protected STATE state = STATE.未激活;
     @Column
     protected TYPE type;
     @Column
@@ -26,8 +25,6 @@ public abstract class CommonEntity {
     protected Date updateTs;
 
     public STATE getState() {
-        if (state == null)
-            return STATE.PASSIVE;
         return state;
     }
 

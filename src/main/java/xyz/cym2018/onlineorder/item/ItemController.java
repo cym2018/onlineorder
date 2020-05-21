@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.cym2018.onlineorder.common.EntityController;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/item")
 public class ItemController implements EntityController<Item> {
     @Autowired
-    ItemService orderService;
+    ItemService itemService;
     @Autowired
     ObjectMapper objectMapper;
 
     @Override
     @RequestMapping("/findAll")
     public String findAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(orderService.findAll());
+        return objectMapper.writeValueAsString(itemService.findAll());
     }
 
     @Override
@@ -31,19 +31,19 @@ public class ItemController implements EntityController<Item> {
     @Override
     @RequestMapping("/listView/findAll")
     public String findAllListView() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(orderService.toListView(orderService.findAll()));
+        return objectMapper.writeValueAsString(itemService.toListView(itemService.findAll()));
     }
 
     @Override
     @RequestMapping("/remove/{id}")
     public String removeById(@PathVariable("id") Item item) {
-        return orderService.remove(item) ? "成功" : "失败";
+        return itemService.remove(item) ? "成功" : "失败";
     }
 
     @RequestMapping("/save")
     public String save(Item item) {
         try {
-            orderService.save(item);
+            itemService.save(item);
         } catch (Exception e) {
             return "失败";
         }

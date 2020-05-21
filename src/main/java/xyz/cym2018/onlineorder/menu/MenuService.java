@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.cym2018.onlineorder.common.CommonService;
 import xyz.cym2018.onlineorder.common.STATE;
-import xyz.cym2018.onlineorder.menu.view.FullView;
+import xyz.cym2018.onlineorder.menu.view.CustomView;
 import xyz.cym2018.onlineorder.menu.view.ListView;
 
 import java.util.ArrayList;
@@ -22,7 +22,11 @@ public class MenuService implements CommonService<Menu> {
 
     @Override
     public List<Menu> findAll() {
-        return menuRepository.findByStateNot(STATE.DELETE);
+        return menuRepository.findByStateNot(STATE.删除);
+    }
+
+    public List<Menu> findAllActive() {
+        return menuRepository.findByState(STATE.激活);
     }
 
     @Override
@@ -32,10 +36,28 @@ public class MenuService implements CommonService<Menu> {
         return viewList;
     }
 
+    public List<Object> toCustomView(List<Menu> menus) {
+        List<Object> viewList = new ArrayList<>();
+        menus.forEach(o -> viewList.add(new CustomView(o)));
+        return viewList;
+    }
+
+    public void setNotActive(Menu menu) {
+        menu.setState(STATE.未激活);
+        menuRepository.save(menu);
+    }
+
+    public void setActive(Menu menu) {
+        menu.setState(STATE.激活);
+        menuRepository.save(menu);
+    }
+
+
     @Override
     public boolean remove(Menu menu) {
         try {
-            menuRepository.delete(menu);
+            menu.setState(STATE.删除);
+            menuRepository.save(menu);
         } catch (Exception e) {
             return false;
         }
