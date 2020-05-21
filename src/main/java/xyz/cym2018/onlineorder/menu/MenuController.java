@@ -3,11 +3,15 @@ package xyz.cym2018.onlineorder.menu;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.cym2018.onlineorder.common.EntityController;
+import xyz.cym2018.onlineorder.item.ItemService;
 import xyz.cym2018.onlineorder.menu.view.FullView;
+import xyz.cym2018.onlineorder.user.User;
+import xyz.cym2018.onlineorder.user.UserService;
 
 @RestController
 @RequestMapping("/menu")
@@ -16,6 +20,10 @@ public class MenuController implements EntityController<Menu> {
     ObjectMapper objectMapper;
     @Autowired
     MenuService menuService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    ItemService itemService;
 
     @Override
     @RequestMapping("/findAll")
@@ -58,8 +66,9 @@ public class MenuController implements EntityController<Menu> {
     }
 
     @RequestMapping("/CustomView/findAll")
-    public String findAllCustomView() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(menuService.toCustomView(menuService.findAllActive()));
+    public String findAllCustomView(@CookieValue("username") String username) throws JsonProcessingException {
+        User user = userService.findByUsername(username);
+        return objectMapper.writeValueAsString(menuService.toCustomView(menuService.findAllActive(), user));
     }
 
     @RequestMapping("/setActive/{id}")
@@ -72,5 +81,12 @@ public class MenuController implements EntityController<Menu> {
     public Boolean setNotActive(@PathVariable("id") Menu menu) {
         menuService.setNotActive(menu);
         return true;
+    }
+
+    @RequestMapping("/buy/{id}")
+    public String doBuy(@PathVariable("id") Menu menu, @CookieValue("username") String username) {
+        User user = userService.findByUsername(username);
+        itemService.doBuy(user, menu, 1);
+        return "成功";
     }
 }

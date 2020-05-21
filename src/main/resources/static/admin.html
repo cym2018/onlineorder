@@ -58,9 +58,10 @@
                     <thead>
                     <tr>
                         <th v-for="title in data.titles[data.show.tab]">{{title}}</th>
-                        <th>
+                        <th v-if="data.show.tab!==2">
                             <button class="btn btn-sm btn-info" @click="create()">添加</button>
-                            </th><th>
+                        </th>
+                        <th>
                             <button class="btn btn-sm btn-success" @click="loadList()">刷新</button>
                         </th>
                     </tr>
@@ -68,7 +69,7 @@
                     <tbody>
                     <tr v-for="i in data.list">
                         <td v-for="j in i">{{j}}</td>
-                        <td v-if="data.show.tab===0">
+                        <td v-if="data.show.tab===0||data.show.tab===1">
                             <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
                         </td>
                         <td v-if="data.show.tab===0">
@@ -78,14 +79,20 @@
                             <button class="btn btn-sm btn-info" @click="setNotActive(i.id)">冻结</button>
                         </td>
                         <td v-if="data.show.tab===1&&i.state==='未激活'">
-                            <button class="btn btn-sm btn-success" @click="setActive(i.id)">激活
-                            </button>
+                            <button class="btn btn-sm btn-success" @click="setActive(i.id)">激活</button>
                         </td>
                         <td v-if="data.show.tab===1">
-                            <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除
-                            </button>
+                            <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
                         </td>
-
+                        <td v-if="data.show.tab===2&&i.state==='未支付'">
+                            <button class="btn btn-sm btn-danger" @click="cancel(i.id)">关闭订单</button>
+                        </td>
+                        <td v-if="data.show.tab===2&&i.state==='已支付'">
+                            <button class="btn btn-sm btn-danger" @click="backMoney(i.id)">退款</button>
+                        </td>
+                        <td v-if="data.show.tab===2&&i.state==='已支付'">
+                            <button class="btn btn-sm btn-danger" @click="finished(i.id)">完成订单</button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -212,13 +219,6 @@
                         <input type="text" v-model="data.entity.state" class="form-control" placeholder="请输入状态">
                     </div>
                 </div>
-                <!--类型-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">类型</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.type" class="form-control" placeholder="请输入类型">
-                    </div>
-                </div>
                 <!--库存-->
                 <div class="form-group">
                     <div class="col-sm-2 control-label">库存</div>
@@ -332,20 +332,26 @@
             this.loadList();
           });
         },
+        cancel(id){
+          jQuery.get(this.url.cancelItem(id)).then(res=>{this.loadList();});
+        },
+        backMoney(id){
+          jQuery.get(this.url.backMoney(id)).then(res=>{
+            alert("退款"+res+"元");
+            this.loadList();}
+          );
+        },
+        finished(id){
+          jQuery.get(this.url.finished(id)).then(res=>{
+            alert(res);
+            this.loadList();
+          })
+        },
       },
       created() {
         this.loadList();
       }
     });
-
-
-
-
-
-
-
-
-
 </script>
 </body>
 </html>

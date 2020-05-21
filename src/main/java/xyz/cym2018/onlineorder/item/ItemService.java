@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import xyz.cym2018.onlineorder.common.CommonService;
 import xyz.cym2018.onlineorder.common.STATE;
 import xyz.cym2018.onlineorder.common.TYPE;
+import xyz.cym2018.onlineorder.item.view.CustomView;
 import xyz.cym2018.onlineorder.item.view.ListView;
 import xyz.cym2018.onlineorder.menu.Menu;
 import xyz.cym2018.onlineorder.menu.MenuService;
@@ -13,12 +14,26 @@ import xyz.cym2018.onlineorder.user.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static xyz.cym2018.onlineorder.common.STATE.*;
+
 @Service
 public class ItemService implements CommonService<Item> {
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
     private MenuService menuService;
+
+    public List<Item> findByUser(User user) {
+        return itemRepository.findByUser(user);
+    }
+
+    public List<Item> findCartByUser(User user) {
+        return itemRepository.findByUserAndState(user, 未支付);
+    }
+
+    public List<Item> findHistoryByUser(User user) {
+        return itemRepository.findByUserAndStateNot(user, 未支付);
+    }
 
     @Override
     public Item save(Item item) {
@@ -30,10 +45,28 @@ public class ItemService implements CommonService<Item> {
         return itemRepository.findAll();
     }
 
+    public Item findByUserAndMenu(User user, Menu menu) {
+        return itemRepository.findByUserAndMenu(user, menu);
+    }
+
+    public void clearCart(User user) {
+        List<Item> list = itemRepository.findByUserAndState(user, 未支付);
+        list.forEach(itemRepository::delete);
+    }
+    public void finished(Item item){
+        item.setState(已完成);
+        itemRepository.save(item);
+    }
     @Override
     public List<Object> toListView(List<Item> orders) {
         List<Object> viewList = new ArrayList<>();
         orders.forEach(o -> viewList.add(new ListView(o)));
+        return viewList;
+    }
+
+    public List<Object> toCustomView(List<Item> orders) {
+        List<Object> viewList = new ArrayList<>();
+        orders.forEach(o -> viewList.add(new CustomView(o)));
         return viewList;
     }
 
@@ -47,7 +80,15 @@ public class ItemService implements CommonService<Item> {
         }
         return true;
     }
-
+    public void cancel(Item item){
+        item.setState(撤销);
+        itemRepository.save(item);
+    }
+    public double backMoney(Item item){
+        item.setState(退款);
+        itemRepository.save(item);
+        return item.getNumber()*item.getMenu().getPrice();
+    }
     public boolean doBuy(User user, Menu menu, Integer number) {
         // 检查用户
         if ((!user.getState().equals(STATE.激活)) || (!user.getType().equals(TYPE.顾客))) {
@@ -55,9 +96,9 @@ public class ItemService implements CommonService<Item> {
         }
         // 检查是否存在记录
         Item item;
-        if (itemRepository.existsByUserAndMenuAndState(user, menu, STATE.激活)) {
+        if (itemRepository.existsByUserAndMenuAndState(user, menu, STATE.未支付)) {
             // 存在记录,修改
-            item = itemRepository.findByUserAndMenuAndState(user, menu, STATE.激活);
+            item = itemRepository.findByUserAndMenuAndState(user, menu, STATE.未支付);
         } else {
             // 不存在记录,创建
             item = new Item(user, menu, 0);
@@ -80,8 +121,16 @@ public class ItemService implements CommonService<Item> {
         }
         // 修改数据
         item.setNumber(item.getNumber() + number);
-        itemRepository.save(item);
+        // 如果操作结果使购买数量为0,删除购买记录
+        item = itemRepository.save(item);
+        if (item.getNumber() == 0) {
+            itemRepository.delete(item);
+        }
         return true;
+    }
+
+    public Item findByUserAndMenuAndState(User user, Menu menu, STATE state) {
+        return itemRepository.findByUserAndMenuAndState(user, menu, state);
     }
 
 

@@ -20,8 +20,17 @@ const url = {
     return this.tables[tab]+"setActive/"+id;
   },
   setNotActive(tab,id){
-      return this.tables[tab]+"setNotActive/"+id;
-    },
+    return this.tables[tab]+"setNotActive/"+id;
+  },
+  cancelItem(id){
+    return this.tables[2]+"cancel/"+id;
+  },
+  backMoney(id){
+    return this.tables[2]+"backMoney/"+id;
+  },
+  finished(id){
+    return this.tables[2]+"finished/"+id;
+  }
 }
 const data = {
   user: {
@@ -36,7 +45,7 @@ const data = {
   titles: [
     ["id", "用户名", "姓名", "性别", "年龄", "角色"],
     ["id","名称","价格","备注","库存","状态"],
-    ["订单编号","下单用户","商品名","数量","总金额","类型"]
+    ["订单编号","下单用户","商品名","数量","总金额","类型","更新时间"],
   ]
 }
 // 获取url中的值

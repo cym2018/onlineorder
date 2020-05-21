@@ -7,20 +7,16 @@ import xyz.cym2018.onlineorder.item.Item;
 
 import java.util.Date;
 
-@JsonPropertyOrder({"id", "username", "menu", "number", "amount", "state", "time"})
-public class ListView {
+@JsonPropertyOrder({"id", "menu", "number", "price", "amount", "state", "time"})
+public class CustomView {
     private final Item item;
 
-    public ListView(Item item) {
+    public CustomView(Item item) {
         this.item = item;
     }
 
     public Integer getId() {
         return item.getId();
-    }
-
-    public String getUsername() {
-        return item.getUser().getUsername();
     }
 
     public String getMenu() {
@@ -29,6 +25,10 @@ public class ListView {
 
     public Integer getNumber() {
         return item.getNumber();
+    }
+
+    public Double getPrice() {
+        return item.getMenu().getPrice();
     }
 
     public Double getAmount() {
