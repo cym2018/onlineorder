@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.cym2018.onlineorder.common.EntityController;
+import xyz.cym2018.onlineorder.common.TYPE;
 
 @RequestMapping("/user")
 @RestController
@@ -42,7 +43,11 @@ public class UserController implements EntityController<User> {
 
     @RequestMapping("/save")
     public String save(User user) {
+        if (user.getType() == null) {
+            user.setType(TYPE.顾客);
+        }
         try {
+
             userService.save(user);
         } catch (Exception e) {
             return "失败";

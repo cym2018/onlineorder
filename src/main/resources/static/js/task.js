@@ -3,9 +3,9 @@ const url = {
   root: "/",
   login: "/login",
   logout: "/logout",
-  tables:["/user/","/menu/","/order/"],
+  tables:["/item/"],
   findAll(tab){
-    return this.tables[tab]+"listView/findAll";
+    return this.tables[tab]+"findpay";
   },
   findOne(tab){
     return this.tables[tab];
@@ -15,6 +15,9 @@ const url = {
   },
   remove(tab){
     return this.tables[tab]+"remove/"
+  },
+  finished(id){
+    return this.tables[0]+"finished/"+id;
   }
 }
 const data = {
@@ -28,8 +31,7 @@ const data = {
     func: 'list',
   },
   titles: [
-    ["id", "用户名", "姓名", "性别", "年龄", "角色"],
-    ["id","名称","价格","备注","类型","库存","状态"]
+    ["订单编号","下单用户","商品名","数量","总金额","类型","更新时间"],
   ]
 }
 // 获取url中的值

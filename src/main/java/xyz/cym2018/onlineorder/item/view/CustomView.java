@@ -7,7 +7,7 @@ import xyz.cym2018.onlineorder.item.Item;
 
 import java.util.Date;
 
-@JsonPropertyOrder({"id", "menu", "number", "price", "amount", "state", "time"})
+@JsonPropertyOrder({"id", "menu", "number", "price", "amount", "state", "time", "operator"})
 public class CustomView {
     private final Item item;
 
@@ -42,5 +42,9 @@ public class CustomView {
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     public Date getTime() {
         return item.getUpdateTs();
+    }
+
+    public String getOperator() {
+        return item.getOperator().getUsername();
     }
 }

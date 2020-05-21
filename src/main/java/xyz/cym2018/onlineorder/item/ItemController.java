@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.cym2018.onlineorder.common.EntityController;
-import xyz.cym2018.onlineorder.common.STATE;
 import xyz.cym2018.onlineorder.user.User;
 import xyz.cym2018.onlineorder.user.UserService;
 
 import java.util.List;
+
+import static xyz.cym2018.onlineorder.common.STATE.已支付;
+import static xyz.cym2018.onlineorder.common.STATE.未支付;
 
 @RestController
 @RequestMapping("/item")
@@ -28,6 +30,11 @@ public class ItemController implements EntityController<Item> {
     @RequestMapping("/findAll")
     public String findAll() throws JsonProcessingException {
         return objectMapper.writeValueAsString(itemService.findAll());
+    }
+
+    @RequestMapping("/findpay")
+    public String findpay() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(itemService.toListView(itemService.findByState(已支付)));
     }
 
     @Override
@@ -61,7 +68,7 @@ public class ItemController implements EntityController<Item> {
     @RequestMapping("/CustomView/cart")
     public String customViewCart(@CookieValue("username") String username) throws JsonProcessingException {
         User user = userService.findByUsername(username);
-        return objectMapper.writeValueAsString(itemService.toCustomView(itemService.findCartByUser(user)));
+        return objectMapper.writeValueAsString(itemService.toCustomView(itemService.findByUserAndState(user, 未支付)));
     }
 
     @RequestMapping("/CustomView/history")
@@ -71,8 +78,9 @@ public class ItemController implements EntityController<Item> {
     }
 
     @RequestMapping("/cancel/{id}")
-    public String cancel(@PathVariable("id") Item item) {
-        itemService.cancel(item);
+    public String cancel(@PathVariable("id") Item item, @CookieValue("username") String username) {
+
+        itemService.cancel(item, userService.findByUsername(username));
         return "成功";
     }
 
@@ -86,26 +94,27 @@ public class ItemController implements EntityController<Item> {
     @RequestMapping("/pay")
     public String pay(@CookieValue("username") String username) {
         User user = userService.findByUsername(username);
-        List<Item> list = itemService.findCartByUser(user);
-        double sum = list.stream().mapToDouble(o -> {
-            return o.getNumber() * o.getMenu().getPrice();
-        }).sum();
+        List<Item> list = itemService.findByUserAndState(user, 未支付);
+        double sum = list.stream().mapToDouble(o -> o.getNumber() * o.getMenu().getPrice()).sum();
         list.forEach(o -> {
-            o.setState(STATE.已支付);
+            o.setOperator(user);
+            o.setState(已支付);
             itemService.save(o);
         });
         return Double.toString(sum);
     }
 
     @RequestMapping("/finished/{id}")
-    public String finished(@PathVariable("id") Item item) {
-        itemService.finished(item);
+    public String finished(@PathVariable("id") Item item, @CookieValue("username") String username) {
+        User user = userService.findByUsername(username);
+        itemService.finished(item, user);
         return "成功";
     }
 
     @RequestMapping("/backMoney/{id}")
-    public Double backMoney(@PathVariable("id") Item item) {
-        return itemService.backMoney(item);
+    public Double backMoney(@PathVariable("id") Item item, @CookieValue("username") String username) {
+        User user = userService.findByUsername(username);
+        return itemService.backMoney(item, user);
     }
 
 }

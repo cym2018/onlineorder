@@ -263,13 +263,6 @@
             </div>
 
         </div>
-        <!---->
-        <div v-if="data.show.func==='edit'&&data.show.tab===2">编辑2</div>
-        <div v-if="data.show.func==='edit'&&data.show.tab===3">编辑3</div>
-        <div v-if="data.show.func==='edit'&&data.show.tab===4">编辑4</div>
-        <div v-if="data.show.func==='edit'">
-            <button @click="data.show.func='list'">返回</button>
-        </div>
     </div>
 </div>
 <script>
@@ -345,7 +338,7 @@
           jQuery.get(this.url.finished(id)).then(res=>{
             alert(res);
             this.loadList();
-          })
+          });
         },
       },
       created() {

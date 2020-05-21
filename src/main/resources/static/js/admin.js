@@ -3,6 +3,7 @@ const url = {
   root: "/",
   login: "/login",
   logout: "/logout",
+  reg:"/user/save",
   tables:["/user/","/menu/","/item/"],
   findAll(tab){
     return this.tables[tab]+"listView/findAll";
@@ -45,7 +46,7 @@ const data = {
   titles: [
     ["id", "用户名", "姓名", "性别", "年龄", "角色"],
     ["id","名称","价格","备注","库存","状态"],
-    ["订单编号","下单用户","商品名","数量","总金额","类型","更新时间"],
+    ["订单编号","下单用户","商品名","数量","总金额","类型","更新时间","操作者"],
   ]
 }
 // 获取url中的值

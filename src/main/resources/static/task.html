@@ -30,14 +30,6 @@
                 <ul class="nav navbar-nav">
                     <li :class="data.show.tab===0?'active':''"><a @click="setTab(0)">
                         <span class="glyphicon glyphicon-bed"></span>任务列表</a></li>
-                    <li :class="data.show.tab===1?'active':''"><a @click="setTab(1)">
-                        <span class="glyphicon glyphicon-book"></span>购物车</a></li>
-                    <li :class="data.show.tab===2?'active':''"><a @click="setTab(2)">
-                        <span class="glyphicon glyphicon-user"></span>历史记录</a></li>
-                    <li :class="data.show.tab===3?'active':''"><a @click="setTab(3)">
-                        <span class="glyphicon glyphicon-user"></span>医生管理</a></li>
-                    <li :class="data.show.tab===4?'active':''"><a @click="setTab(4)">
-                        <span class="glyphicon glyphicon-wrench"></span>科室管理</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
@@ -62,202 +54,18 @@
                     <thead>
                     <tr>
                         <th v-for="title in data.titles[data.show.tab]">{{title}}</th>
-                        <th>
-                            <button class="btn btn-sm btn-info" @click="create()">添加</button>
-                            <button class="btn btn-sm btn-success" @click="loadList()">刷新</button>
-                        </th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="i in data.list">
                         <td v-for="j in i">{{j}}</td>
                         <td>
-                            <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
-                            <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
+                            <button class="btn btn-sm btn-success" @click="finished(i.id)">完成订单</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-        <!-- 用户编辑 -->
-        <div v-if="data.show.func==='edit'&&data.show.tab===0">
-            <h1>编辑用户</h1>
-            <div class="form-horizontal" role="form">
-                <!--id-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">id</div>
-                    <div class="col-sm-10">
-                        <input disabled="disabled" v-model="data.entity.id" class="form-control" placeholder="自动生成">
-                    </div>
-                </div>
-                <!--姓名-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">姓名</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.name" class="form-control" placeholder="请输入姓名">
-                    </div>
-                </div>
-                <!--性别-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">姓别</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.gender" class="form-control" placeholder="请输入性别">
-                    </div>
-                </div>
-                <!--状态-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">状态</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.state" class="form-control" placeholder="请输入状态">
-                    </div>
-                </div>
-                <!--年龄-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">年龄</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.age" class="form-control" placeholder="请输入年龄">
-                    </div>
-                </div>
-                <!--邮箱-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">邮箱</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.mail" class="form-control" placeholder="请输入邮箱">
-                    </div>
-                </div>
-                <!--电话-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">电话</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.phone" class="form-control" placeholder="请输入电话">
-                    </div>
-                </div>
-                <!--用户名-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">用户名</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.username" class="form-control" placeholder="请输入用户名">
-                    </div>
-                </div>
-                <!--密码-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">密码</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.password" class="form-control" placeholder="请输入密码">
-                    </div>
-                </div>
-                <!--类型-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">类型</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.type" class="form-control" placeholder="请输入类型">
-                    </div>
-                </div>
-                <!--备注-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">备注</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.note" class="form-control" placeholder="备注">
-                    </div>
-                </div>
-                <!--按钮-->
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default" @click="save()">
-                            保存
-                        </button>
-                        <button class="btn btn-warning" style="margin-left: 20px" @click="data.show.func='list'">
-                            取消
-                        </button>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 菜单编辑 -->
-        <div v-if="data.show.func==='edit'&&data.show.tab===1">
-            <h1>编辑菜单</h1>
-            <div class="form-horizontal" role="form">
-                <!--id-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">id</div>
-                    <div class="col-sm-10">
-                        <input disabled="disabled" v-model="data.entity.id" class="form-control" placeholder="自动生成">
-                    </div>
-                </div>
-                <!--商品名-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">商品名</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.name" class="form-control" placeholder="请输入姓名">
-                    </div>
-                </div>
-                <!--状态-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">状态</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.state" class="form-control" placeholder="请输入状态">
-                    </div>
-                </div>
-                <!--类型-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">类型</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.type" class="form-control" placeholder="请输入类型">
-                    </div>
-                </div>
-                <!--库存-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">库存</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.number" class="form-control" placeholder="请输入库存">
-                    </div>
-                </div>
-                <!--价格-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">价格</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.price" class="form-control" placeholder="请输入价格">
-                    </div>
-                </div>
-                <!--备注-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">备注</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.note" class="form-control" placeholder="备注">
-                    </div>
-                </div>
-                <!--详细信息-->
-                <div class="form-group">
-                    <div class="col-sm-2 control-label">详细信息</div>
-                    <div class="col-sm-10">
-                        <input type="text" v-model="data.entity.detail" class="form-control" placeholder="详细信息">
-                    </div>
-                </div>
-                <!--按钮-->
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default" @click="save()">
-                            保存
-                        </button>
-                        <button class="btn btn-warning" style="margin-left: 20px" @click="data.show.func='list'">
-                            取消
-                        </button>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!---->
-        <div v-if="data.show.func==='edit'&&data.show.tab===2">编辑2</div>
-        <div v-if="data.show.func==='edit'&&data.show.tab===3">编辑3</div>
-        <div v-if="data.show.func==='edit'&&data.show.tab===4">编辑4</div>
-        <div v-if="data.show.func==='edit'">
-            <button @click="data.show.func='list'">返回</button>
         </div>
     </div>
 </div>
@@ -295,6 +103,12 @@
         loadEntity(id) {
           jQuery.get(this.url.findOne(this.data.show.tab) + id).then(res => {
             this.data.entity = JSON.parse(res);
+          });
+        },
+        finished(id){
+          jQuery.get(this.url.finished(id)).then(res=>{
+            alert(res);
+            this.loadList();
           });
         },
         save(){

@@ -17,10 +17,6 @@ import java.util.Date;
  */
 @Entity
 public class Item extends CommonEntity {
-    public Item() {
-        super.setState(STATE.未支付);
-    }
-
     @OneToOne
     @JoinColumn(name = "USER_ID")
     private User user;
@@ -28,15 +24,30 @@ public class Item extends CommonEntity {
     @JoinColumn(name = "MENU_ID")
     private Menu menu;
 
+    public User getOperator() {
+        return operator;
+    }
+
+    public void setOperator(User operator) {
+        this.operator = operator;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "OPERATE_ID")
+    private User operator;
+    @Column
+    private Integer number;
+
+    public Item() {
+        super.setState(STATE.未支付);
+    }
+
     public Item(User user, Menu menu, Integer number) {
         super.setState(STATE.未支付);
         this.user = user;
         this.menu = menu;
         this.number = number;
     }
-
-    @Column
-    private Integer number;
 
     public User getUser() {
         return user;

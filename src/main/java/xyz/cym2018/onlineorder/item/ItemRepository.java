@@ -19,4 +19,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByUserAndStateNot(User user, STATE state);
 
     Item findByUserAndMenu(User user, Menu menu);
+
+    List<Item> findByState(STATE state);
 }

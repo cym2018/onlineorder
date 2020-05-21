@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-  <script src="/js/admin.js"></script>
-  <title>用户登录</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/admin.js"></script>
+    <title>用户登录</title>
 </head>
 <body style=" background: url(/pic/background.jpg) no-repeat center center fixed; background-size: 100%;">
 <div id="app" class="modal-dialog" style="margin-top: 10%;">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h4 class="modal-title text-center" id="myModalLabel">登录</h4>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel">登录</h4>
+        </div>
+        <div class="modal-body" id="model-body">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="用户名" autocomplete="off"
+                       v-model="data.user.username">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="密码" autocomplete="off"
+                       v-model="data.user.password">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <button type="button" class="btn btn-primary form-control" @click="login">登录</button>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-default form-control" @click="reg">注册</button>
+            </div>
+        </div>
     </div>
-    <div class="modal-body" id="model-body">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="用户名" autocomplete="off" v-model="data.user.username">
-      </div>
-      <div class="form-group">
-        <input type="password" class="form-control" placeholder="密码" autocomplete="off" v-model="data.user.password">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <div class="form-group">
-        <button type="button" class="btn btn-primary form-control" @click="login">登录</button>
-      </div>
-      <div class="form-group">
-        <button type="button" class="btn btn-default form-control" onclick="alert('todo:需要完善')">注册</button>
-      </div>
-    </div>
-  </div>
 </div>
 <script>
   let app = new Vue({
@@ -43,7 +45,12 @@
           alert(response);
           window.location.href = url.root;
         });
-      }
+      },
+      reg(){
+        jQuery.get(this.url.reg+urlEncoding2(data.user)).then(res=>{
+          alert("注册"+res);
+        });
+      },
     }
   });
 </script>
