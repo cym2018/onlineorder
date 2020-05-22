@@ -1,54 +1,113 @@
 package xyz.cym2018.onlineorder.common;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import xyz.cym2018.onlineorder.item.ItemService;
 import xyz.cym2018.onlineorder.menu.Menu;
 import xyz.cym2018.onlineorder.menu.MenuService;
 import xyz.cym2018.onlineorder.user.User;
 import xyz.cym2018.onlineorder.user.UserService;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Controller
+@RestController
 public class MainController {
+    @Autowired
+    HttpServletRequest request;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    HttpServletResponse response;
+    @Autowired
+    UserService userService;
+    @Autowired
+    MenuService menuService;
     @Autowired
     ItemService itemService;
     @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MenuService menuService;
+    private UserService adminService;
 
-    @RequestMapping("/")
-    public String autoLogin(
-            @Nullable @CookieValue("username") String cUsername,
-            @Nullable @CookieValue("password") String cPassword
-    ) throws JsonProcessingException {
-        if (cUsername == null || cPassword == null) {
-            return "login";
+    @RequestMapping("/login")
+    public String login(String username, String password) {
+        boolean result = adminService.login(username, password);
+        if (result) {
+            response.addCookie(new Cookie("username", username));
+            response.addCookie(new Cookie("password", password));
+            return "登陆成功";
         }
-        if (!userService.login(cUsername, cPassword)) {
-            return "login";
+        return "用户名或密码不正确";
+    }
+
+    /**
+     * 删除登陆信息:Cookie和Session
+     *
+     * @return 注销成功
+     */
+    @RequestMapping("/logout")
+    public boolean logout() {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie i : cookies) {
+                i.setMaxAge(0);
+                response.addCookie(i);
+            }
         }
-        User user = userService.findByUsername(cUsername);
-        switch (user.getType()) {
-            case 员工:
-                return "task";
-            case 顾客:
-                return "shop";
-            case 管理员:
-                return "admin";
-            default:
-                return "login";
+        request.getSession().invalidate();
+        return true;
+    }
+
+    /**
+     * 生成二维码方法
+     *
+     * @param username,password 输入的信息
+     * @param resp              response对象
+     * @throws Exception 抛出异常
+     */
+    @RequestMapping(value = "/qrcode")
+    public void createQrcode(@CookieValue("username") String username, @CookieValue("password") String password, Integer id, HttpServletResponse resp) throws Exception {
+        if (!userService.login(username, password)) {
+            return;
+        }
+        if (!userService.findByUsername(username).getType().equals(TYPE.管理员)) {
+            return;
+        }
+        User user = userService.findById(id);
+        String content = "localhost/QRLogin?username=" + user.getUsername() + "&password=" + user.getPassword();
+        ServletOutputStream stream = null;
+        try {
+            stream = resp.getOutputStream();
+            Map<EncodeHintType, Object> hints = new HashMap<>();
+            //编码
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            //边框距
+            hints.put(EncodeHintType.MARGIN, 0);
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bm = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 200, 200, hints);
+            MatrixToImageWriter.writeToStream(bm, "png", stream);
+        } catch (WriterException e) {
+            e.getStackTrace();
+
+        } finally {
+            if (stream != null) {
+                stream.flush();
+                stream.close();
+            }
         }
     }
 
@@ -58,7 +117,7 @@ public class MainController {
      * @return debug页面
      */
     @RequestMapping("/debug")
-    public String debug() {
+    public ModelAndView debug() {
         if (userService.findAll().size() == 0) {
             // 生成用户数据
             {
@@ -121,7 +180,47 @@ public class MainController {
                 });
             }
         }
-        return "debug";
+        return new ModelAndView("debug");
     }
 
+    /**
+     * 根据cookie 自动登陆
+     *
+     * @param cUsername 用户名
+     * @param cPassword 密码
+     * @return 视图
+     */
+    @RequestMapping("/")
+    public ModelAndView autoLogin(
+            @Nullable @CookieValue("username") String cUsername,
+            @Nullable @CookieValue("password") String cPassword
+    ) {
+        if (cUsername == null || cPassword == null) {
+            return new ModelAndView("login");
+        }
+        if (!userService.login(cUsername, cPassword)) {
+            return new ModelAndView("login");
+        }
+        User user = userService.findByUsername(cUsername);
+        switch (user.getType()) {
+            case 员工:
+                return new ModelAndView("task");
+            case 顾客:
+                return new ModelAndView("shop");
+            case 管理员:
+                return new ModelAndView("admin");
+            default:
+                return new ModelAndView("login");
+        }
+    }
+
+    @RequestMapping("/QRLogin")
+    public ModelAndView qrLogin(String username, String password) {
+        if (login(username, password).equals("登陆成功")) {
+            return autoLogin(username, password);
+        } else {
+            return new ModelAndView("login");
+        }
+
+    }
 }

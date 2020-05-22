@@ -11,7 +11,7 @@
     <script src="/js/admin.js"></script>
     <title>管理页面</title>
 </head>
-<body>
+<body style=" background: url(/pic/background_1.jpg) no-repeat center center fixed; background-size: 100% 100%;">
 <div id="app">
     <!-- 顶部导航栏 -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -71,6 +71,9 @@
                         <td v-for="j in i">{{j}}</td>
                         <td v-if="data.show.tab===0||data.show.tab===1">
                             <button class="btn btn-sm btn-info" @click="edit(i.id)">编辑</button>
+                        </td>
+                        <td v-if="data.show.tab===0">
+                            <button class="btn btn-sm btn-success" @click="createQRCode(i.id)">生成二维码</button>
                         </td>
                         <td v-if="data.show.tab===0">
                             <button class="btn btn-sm btn-danger" @click="remove(i.id)">删除</button>
@@ -339,6 +342,9 @@
             alert(res);
             this.loadList();
           });
+        },
+        createQRCode(id){
+          window.open("/qrcode?id="+id);
         },
       },
       created() {

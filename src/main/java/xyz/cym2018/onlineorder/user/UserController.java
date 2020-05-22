@@ -3,9 +3,12 @@ package xyz.cym2018.onlineorder.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import xyz.cym2018.onlineorder.common.EntityController;
 import xyz.cym2018.onlineorder.common.TYPE;
 
@@ -54,4 +57,6 @@ public class UserController implements EntityController<User> {
         }
         return "成功";
     }
+
+
 }

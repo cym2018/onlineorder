@@ -25,6 +25,9 @@ public class UserService implements CommonService<User> {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    public User findById(Integer id){
+        return userRepository.getOne(id);
+    }
 
     @Override
     public List<User> findAll() {
