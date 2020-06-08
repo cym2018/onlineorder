@@ -50,7 +50,6 @@ public class UserController implements EntityController<User> {
             user.setType(TYPE.顾客);
         }
         try {
-
             userService.save(user);
         } catch (Exception e) {
             return "失败";

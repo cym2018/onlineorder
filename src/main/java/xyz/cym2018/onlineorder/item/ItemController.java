@@ -79,7 +79,6 @@ public class ItemController implements EntityController<Item> {
 
     @RequestMapping("/cancel/{id}")
     public String cancel(@PathVariable("id") Item item, @CookieValue("username") String username) {
-
         itemService.cancel(item, userService.findByUsername(username));
         return "成功";
     }
